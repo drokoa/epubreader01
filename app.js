@@ -81,17 +81,34 @@ async function openChapter(index, direction = 'forward') {
     }
   }
 
- const isRTL = getDirection() === 'rtl';
-const goingForward = index > currentIndex;
-let fromRight;
+const isRTL = getDirection() === 'rtl';
 
-if (goingForward) {
-  // 下一章：LTR 从右进，RTL 从左进
-  fromRight = !isRTL;
-} else {
-  // 上一章：LTR 从左进，RTL 从右进
-  fromRight = isRTL;
-}
+  // 判断是向前翻还是向后翻（假设 index 是当前章节索引，currentIndex 是上一章索引）
+  const goingForward = index > currentIndex;
+  let fromRight;
+
+  if (goingForward) {
+    fromRight = !isRTL;
+  } else {
+    fromRight = isRTL;
+  }
+
+  // 手势滑动逻辑
+  if (touchDeltaX > 0) {
+    // 右滑：LTR是上一页，RTL是下一页
+    if (isRTL) {
+      nextBtn.click();
+    } else {
+      prevBtn.click();
+    }
+  } else if (touchDeltaX < 0) {
+    // 左滑：LTR是下一页，RTL是上一页
+    if (isRTL) {
+      prevBtn.click();
+    } else {
+      nextBtn.click();
+    }
+  }
 
   const newLayer = document.createElement('div');
   newLayer.className = 'page-layer ' + (fromRight ? 'slide-in-right' : 'slide-in-left');

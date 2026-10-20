@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>EPUB 阅读器</title>
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: "PingFang SC", "Microsoft YaHei", sans-serif; background: #f5f5f5; color: #333; overscroll-behavior-x: none; }
+
+  #library { padding: 20px; }
+  #library.hidden { display: none; }
+
+  #reader { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: #fff; display: flex; flex-direction: column; z-index: 1000; }
+  #reader.hidden { display: none; }
+
+  #top-bar {
+    display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
+    padding: 10px; background: #fff; border-bottom: 1px solid #ddd;
+  }
+  #top-bar button, #top-bar select {
+    font-size: 14px; padding: 6px 10px; border-radius: 6px; border: 1px solid #ccc; background: #fff;
+  }
+  #chapter-title {
+    font-size: 15px; font-weight: bold;
+    flex: 1; min-width: 100px;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+
+  #reader-content {
+    position: relative;
+    flex: 1;
+    overflow: hidden;
+    background: #fff;
+  }
+
+  .page-layer {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%;
+    height: 100%;
+    padding: 12px 14px;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    will-change: transform;
+  }
+
+  .page-layer.slide-in-right { transform: translateX(100%); }
+  .page-layer.slide-in-left  { transform: translateX(-100%); }
+  .page-layer.to-center      { transform: translateX(0); }
+  .page-layer.animate        { transition: transform 0.3s ease-out; }
+  .page-layer.out-left       { transform: translateX(-100%); }
+  .page-layer.out-right      { transform: translateX(100%); }
+
+  .page-layer img { max-width: 100%; height: auto; display: block; margin: 8px auto; }
+  .page-layer p { margin: 0 0 12px 0; line-height: 1.8; }
+
+  .rtl-layout { direction: rtl; text-align: right; }
+  .rtl-layout img { margin: 8px 0 8px auto; }
+
+  #page-controls {
+    display: flex; justify-content: space-between; gap: 12px;
+    padding: 10px; background: #fff; border-top: 1px solid #ddd;
+  }
+  #page-controls button {
+    flex: 1; padding: 12px; font-size: 16px; border-radius: 8px;
+    border: none; background: #007aff; color: #fff; cursor: pointer;
+  }
+  #page-controls button:disabled { background: #ccc; }
+</style>
+</head>
+<body>
+
+<div id="library">
+  <h2>📚 EPUB 阅读器</h2>
+  <input type="file" id="file-input" accept=".epub">
+</div>
+
+<div id="reader" class="hidden">
+  <div id="top-bar">
+    <button id="back-btn">← 目录</button>
+    <span id="chapter-title"></span>
+    <select id="direction-select">
+      <option value="ltr">从左往右</option>
+      <option value="rtl">从右往左</option>
+    </select>
+  </div>
+  <div id="reader-content"></div>
+  <div id="page-controls">
+    <button id="prev-btn">← 上一章</button>
+    <button id="next-btn">下一章 →</button>
+  </div>
+</div>
+
+<script src="jszip.min.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

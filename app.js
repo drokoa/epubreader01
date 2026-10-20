@@ -82,14 +82,22 @@ async function openChapter(index, direction = 'forward') {
   }
 
   const isRTL = getDirection() === 'rtl';
-const goingForward = index > currentIndex;
-let fromRight;
-if (goingForward) {
-  // 下一章：LTR 从右进，RTL 从左进
-  fromRight = !isRTL;
-} else {
-  // 上一章：LTR 从左进，RTL 从右进
-  fromRight = isRTL;
+
+// 恢复为 RTL 模式下向右滑下一页
+if (touchDeltaX > 0) {
+  // 右滑：LTR是上一页，RTL是下一页
+  if (isRTL) {
+    nextBtn.click();
+  } else {
+    prevBtn.click();
+  }
+} else if (touchDeltaX < 0) {
+  // 左滑：LTR是下一页，RTL是上一页
+  if (isRTL) {
+    prevBtn.click();
+  } else {
+    nextBtn.click();
+  }
 }
 
   const newLayer = document.createElement('div');
